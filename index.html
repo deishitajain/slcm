@@ -44,14 +44,6 @@
       font-size: 15px;
       cursor: pointer;
     }
-    .nav-item-sub {
-      background-color: #e5821e;
-      padding: 12px 30px;
-      font-size: 13px;
-      color: #ffffff !important;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      cursor: pointer;
-    }
     
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: #f8fafc; }
@@ -61,33 +53,29 @@
 <body class="bg-white antialiased min-h-screen flex flex-col justify-between">
 
   <div>
-    <div class="portal-header px-4 py-3.5 flex items-center justify-between border-b border-gray-200 sticky top-0 z-40">
-      <div class="flex items-center gap-3">
+    <!-- ================= TOP NAVIGATION BAR ================= -->
+    <div class="portal-header px-4 py-3 flex items-center justify-between border-b border-gray-200 sticky top-0 z-40">
+      <div class="flex items-center gap-3 w-1/3">
+        <!-- Hamburger (Hidden on Desktop) -->
         <button onclick="toggleMenu(true)" class="focus:outline-none flex items-center justify-center md:hidden" aria-label="Menu">
           <i class="fa-solid fa-bars text-xl text-gray-600 cursor-pointer"></i>
         </button>
-        <img src="logo.png" alt="Manipal Logo" class="w-8 h-8 object-contain" onerror="this.src='https://placehold.co/100x100?text=MANIPAL'"/>
-        <div class="flex flex-col">
-          <span class="text-xs tracking-[0.22em] font-serif leading-none">MANIPAL</span>
-        </div>
         
-        <nav class="hidden md:flex items-center gap-6 ml-8 text-sm">
+        <!-- Desktop Horizontal Navigation Links (Hidden on Mobile) -->
+        <nav class="hidden md:flex items-center gap-6 text-sm">
           <button onclick="showView('profile')" class="hover:text-orange-500 transition">Profile</button>
-          <div class="relative group">
-            <button class="hover:text-orange-500 transition flex items-center gap-1 focus:outline-none">
-              Academics <i class="fa-solid fa-chevron-down text-[10px]"></i>
-            </button>
-            <div class="absolute left-0 mt-1 w-40 bg-white border border-gray-200 rounded shadow-lg hidden group-hover:block z-50">
-              <button onclick="showView('results')" class="w-full text-left px-4 py-2 hover:bg-gray-50 text-xs">Results</button>
-              <button class="w-full text-left px-4 py-2 hover:bg-gray-50 text-xs text-gray-300 cursor-not-allowed">Attendance Log</button>
-            </div>
-          </div>
+          <button onclick="showView('results')" class="hover:text-orange-500 transition">Academics</button>
           <button class="hover:text-orange-500 transition">Schedule</button>
           <button class="hover:text-orange-500 transition">Applications</button>
         </nav>
       </div>
+
+      <!-- Center Aligned Upgraded Logo Format -->
+      <div class="flex justify-center items-center w-1/3">
+        <img src="logo.png" alt="Manipal Logo" class="w-12 h-12 object-contain" onerror="this.src='https://placehold.co/150x150?text=MANIPAL'"/>
+      </div>
       
-      <div class="flex items-center gap-4">
+      <div class="flex items-center justify-end gap-4 w-1/3">
         <i class="fa-solid fa-bell text-xl text-[#f07f3e]"></i>
         <div class="w-7 h-7 rounded-full bg-neutral-300 flex items-center justify-center text-[10px] border border-gray-400">
           DJ
@@ -95,40 +83,34 @@
       </div>
     </div>
 
+    <!-- ================= MOBILE SLIDE-DOWN MENU PANEL ================= -->
     <div id="menu-overlay" class="nav-overlay" onclick="toggleMenu(false)"></div>
     <div id="menu-panel" class="nav-menu-panel shadow-2xl md:hidden">
-      <div class="portal-header px-4 py-3.5 flex items-center justify-between border-b border-gray-200">
+      <div class="portal-header px-4 py-3 flex items-center justify-between border-b border-gray-200">
         <div class="flex items-center gap-3">
           <button onclick="toggleMenu(false)" class="focus:outline-none flex items-center justify-center">
             <i class="fa-solid fa-xmark text-xl text-gray-500 cursor-pointer"></i>
           </button>
-          <img src="logo.png" alt="Manipal Logo" class="w-8 h-8 object-contain" onerror="this.src='https://placehold.co/100x100?text=MANIPAL'"/>
-          <div class="flex flex-col">
-            <span class="text-xs tracking-[0.22em] font-serif leading-none">MANIPAL</span>
-          </div>
         </div>
+        <img src="logo.png" alt="Manipal Logo" class="w-10 h-10 object-contain mr-4" onerror="this.src='https://placehold.co/100x100?text=MANIPAL'"/>
       </div>
       <div class="nav-item-row" onclick="showView('profile')">Home</div>
       <div class="nav-item-row" onclick="showView('profile')">Profile</div>
+      <div class="nav-item-row" onclick="showView('results')">Academics (Results)</div>
       <div class="nav-item-row">Schedule</div>
-      <div class="nav-item-row" onclick="toggleAcademicsSubmenu(event)">
-        Academics <i class="fa-solid fa-chevron-down text-[10px] ml-1 float-right mt-1.5 text-white"></i>
-      </div>
-      <div id="academics-sub" class="hidden flex flex-col">
-        <div class="nav-item-sub" onclick="showView('results')">Results</div>
-        <div class="nav-item-sub">Attendance Log</div>
-        <div class="nav-item-sub">Examination Schedules</div>
-      </div>
       <div class="nav-item-row">Applications</div>
       <div class="nav-item-row">Support Request</div>
       <div class="nav-item-row">Attendance</div>
       <div class="nav-item-row">Academic Calendar</div>
     </div>
 
+    <!-- ================= MAIN SCROLLABLE WRAPPER ================= -->
     <main class="max-w-4xl mx-auto p-4 md:py-8 w-full">
 
+      <!-- VIEW A: PROFILE INFORMATION DASHBOARD PAGE -->
       <div id="view-profile" class="grid grid-cols-1 md:grid-cols-3 gap-6">
         
+        <!-- Left Column: Photo Frame & Identity Metrics -->
         <div class="flex flex-col items-center text-center bg-white md:border md:border-gray-200 md:p-6 md:rounded-lg md:shadow-sm">
           <div class="w-36 h-44 border border-gray-200 overflow-hidden flex items-center justify-center mb-3 bg-gray-50 shadow-sm rounded">
             <img src="student.png" class="w-full h-full object-cover" alt="Student Profile" onerror="this.src='https://placehold.co/150x200?text=Student+Photo'"/>
@@ -138,15 +120,9 @@
           <div class="mt-3 px-6 py-0.5 bg-emerald-600 rounded-full text-white text-xs !color-white">Regular</div>
         </div>
 
-        <div class="md:col-span-2 space-y-4">
-          <div class="bg-white border border-gray-200 p-4 rounded-lg flex items-center gap-3 shadow-sm">
-            <img src="logo.png" alt="Manipal Badge" class="w-10 h-10 object-contain" onerror="this.src='https://placehold.co/100x100?text=MIT'"/>
-            <div class="text-xs leading-tight text-gray-600">
-              Manipal Institute of Technology (MIT),<br>Manipal
-            </div>
-          </div>
-
-          <div class="bg-orange-50/40 border border-orange-100 p-5 rounded-lg text-xs space-y-3 shadow-sm">
+        <!-- Right Column: Academic Particulars Layout Box -->
+        <div class="md:col-span-2">
+          <div class="bg-orange-50/40 border border-orange-100 p-5 rounded-lg text-xs space-y-3 shadow-sm h-full">
             <div class="pb-2 text-gray-800 border-b border-orange-200/40 text-sm">
               Bachelor of Technology (B.Tech.) in Mathematics and Computing
             </div>
@@ -166,6 +142,7 @@
         </div>
       </div>
 
+      <!-- VIEW B: SEMESTER GRADE LOG TRACKING TABLE SHEET -->
       <div id="view-results" class="space-y-6 hidden">
         <div class="flex gap-6 text-sm whitespace-nowrap border-b border-gray-200 px-1">
           <button class="py-2 text-gray-400">Ongoing Semester</button>
@@ -174,6 +151,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          <!-- Control Parameters Selector Block -->
           <div class="bg-white border border-gray-200 p-5 rounded-lg shadow-sm space-y-4">
             <div>
               <label class="text-[11px] text-gray-400 uppercase tracking-wide block mb-1">Select Semester</label>
@@ -207,6 +185,7 @@
             </div>
           </div>
 
+          <!-- Grade Payload Data Table Display Panel -->
           <div class="md:col-span-2 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
             <div class="grid grid-cols-4 text-center text-[10px] uppercase text-gray-400 bg-gray-50/70 border-b border-gray-200 py-3 px-4">
               <div class="text-left">C... Code</div>
@@ -222,6 +201,7 @@
     </main>
   </div>
 
+  <!-- ================= PLAIN SYSTEM FOOTER ================= -->
   <footer class="bg-orange-50/60 p-4 text-center text-[11px] border-t border-orange-100/40 w-full mt-12">
     <p>Welcome to the MAHE Student Portal!</p>
   </footer>
@@ -262,11 +242,6 @@
     function toggleMenu(show) {
       document.getElementById("menu-overlay").style.display = show ? "block" : "none";
       document.getElementById("menu-panel").style.display = show ? "block" : "none";
-    }
-
-    function toggleAcademicsSubmenu(event) {
-      event.stopPropagation();
-      document.getElementById("academics-sub").classList.toggle("hidden");
     }
 
     function showView(viewId) {
