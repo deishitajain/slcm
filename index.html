@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SLCM 2.0</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Strict uniform minimalist typography formatting rules */
     * { 
@@ -13,12 +13,11 @@
       color: #4a4a4a !important; 
       font-weight: 400 !important;
     }
-    .main-wrapper { max-width: 430px; margin: 0 auto; min-height: 100vh; background-color: #ffffff; position: relative; }
     .portal-header { background-color: #f4eee1 !important; }
     .orange-active { border-color: #f07f3e !important; }
     .divider-line { border-top: 1px solid #f3f4f6; padding-top: 12px; margin-top: 16px; }
     
-    /* Navigation Menu Display Configurations */
+    /* Responsive Navigation Overlays for Mobile Only */
     .nav-overlay {
       position: absolute;
       top: 0;
@@ -59,45 +58,57 @@
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
   </style>
 </head>
-<body class="bg-gray-100 antialiased">
+<body class="bg-white antialiased min-h-screen flex flex-col justify-between">
 
-  <div class="main-wrapper border-x border-gray-200">
-
-    <div class="portal-header px-4 py-3 flex items-center justify-between border-b border-gray-200 sticky top-0 z-40">
+  <div>
+    <div class="portal-header px-4 py-3.5 flex items-center justify-between border-b border-gray-200 sticky top-0 z-40">
       <div class="flex items-center gap-3">
-        <button onclick="toggleMenu(true)" class="focus:outline-none">
-          <i class="fa-solid fa-bars text-xl text-gray-500 cursor-pointer"></i>
+        <button onclick="toggleMenu(true)" class="focus:outline-none flex items-center justify-center md:hidden" aria-label="Menu">
+          <i class="fa-solid fa-bars text-xl text-gray-600 cursor-pointer"></i>
         </button>
-        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAMAAABwKC9vAAAAnFBMVEUAAAD/////mZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmxM09pAAAAMXRSTlMAgP9gEBDQ8PAwYGCgEPDwYGAQ8GCg8KDAwKDAgIDw8MDw8KDAwMDAwICAgICAgICAwMC9gN9HAAAA8UlEQVR42u3b2w6CMBAF0FpAsFpA9vL/f7YmJhqiXAnbe9LknIexmclMAwAAAAAAAAAAAAAAAAAAADjS6E69Xmsc99FpGveVp/H866eM+7KOfv+8f67Xp/pMecg2Sft9Z/FId8gY4qFs6ZCx8FCWBMhA9ZArD8lQOOSmAorOIdshGZpD9kPCbX9Izg4p0B6yXWbIDHHIbshmX4fshzjkKOTuN0MctB9ypw6ZIdshDjkMudMccofekO2QO80h++WQE8UhxyE3zSG75ZBwz0NidshmX4fshzjkKOTuN0MctB9ypw6ZIdshDpniHwAAAAAAAAAAAAAAAAAA8EwfoL8EMV+K69kAAAAASUVORK5CYII=" 
-             alt="Manipal Logo" class="w-9 h-9 object-contain" />
+        <img src="logo.png" alt="Manipal Logo" class="w-8 h-8 object-contain" onerror="this.src='https://placehold.co/100x100?text=MANIPAL'"/>
         <div class="flex flex-col">
           <span class="text-xs tracking-[0.22em] font-serif leading-none">MANIPAL</span>
-          <span class="text-[6.5px] tracking-tight uppercase mt-0.5 text-gray-400">Academy of Higher Education</span>
         </div>
+        
+        <nav class="hidden md:flex items-center gap-6 ml-8 text-sm">
+          <button onclick="showView('profile')" class="hover:text-orange-500 transition">Profile</button>
+          <div class="relative group">
+            <button class="hover:text-orange-500 transition flex items-center gap-1 focus:outline-none">
+              Academics <i class="fa-solid fa-chevron-down text-[10px]"></i>
+            </button>
+            <div class="absolute left-0 mt-1 w-40 bg-white border border-gray-200 rounded shadow-lg hidden group-hover:block z-50">
+              <button onclick="showView('results')" class="w-full text-left px-4 py-2 hover:bg-gray-50 text-xs">Results</button>
+              <button class="w-full text-left px-4 py-2 hover:bg-gray-50 text-xs text-gray-300 cursor-not-allowed">Attendance Log</button>
+            </div>
+          </div>
+          <button class="hover:text-orange-500 transition">Schedule</button>
+          <button class="hover:text-orange-500 transition">Applications</button>
+        </nav>
       </div>
+      
       <div class="flex items-center gap-4">
         <i class="fa-solid fa-bell text-xl text-[#f07f3e]"></i>
-        <div class="w-7 h-7 rounded-full bg-neutral-300 flex items-center justify-center text-[10px] border border-gray-400 shadow-sm">
+        <div class="w-7 h-7 rounded-full bg-neutral-300 flex items-center justify-center text-[10px] border border-gray-400">
           DJ
         </div>
       </div>
     </div>
 
     <div id="menu-overlay" class="nav-overlay" onclick="toggleMenu(false)"></div>
-    <div id="menu-panel" class="nav-menu-panel shadow-2xl">
-      <div class="portal-header px-4 py-3 flex items-center justify-between border-b border-gray-200">
+    <div id="menu-panel" class="nav-menu-panel shadow-2xl md:hidden">
+      <div class="portal-header px-4 py-3.5 flex items-center justify-between border-b border-gray-200">
         <div class="flex items-center gap-3">
-          <button onclick="toggleMenu(false)" class="focus:outline-none">
+          <button onclick="toggleMenu(false)" class="focus:outline-none flex items-center justify-center">
             <i class="fa-solid fa-xmark text-xl text-gray-500 cursor-pointer"></i>
           </button>
-          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAMAAABwKC9vAAAAnFBMVEUAAAD/////mZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmxM09pAAAAMXRSTlMAgP9gEBDQ8PAwYGCgEPDwYGAQ8GCg8KDAwKDAgIDw8MDw8KDAwMDAwICAgICAgICAwMC9gN9HAAAA8UlEQVR42u3b2w6CMBAF0FpAsFpA9vL/f7YmJhqiXAnbe9LknIexmclMAwAAAAAAAAAAAAAAAAAAADjS6E69Xmsc99FpGveVp/H866eM+7KOfv+8f67Xp/pMecg2Sft9Z/FId8gY4qFs6ZCx8FCWBMhA9ZArD8lQOOSmAorOIdshGZpD9kPCbX9Izg4p0B6yXWbIDHHIbshmX4fshzjkKOTuN0MctB9ypw6ZIdshDjkMudMccofekO2QO80h++WQE8UhxyE3zSG75ZBwz0NidshmX4fshzjkKOTuN0MctB9ypw6ZIdshDpniHwAAAAAAAAAAAAAAAAAA8EwfoL8EMV+K69kAAAAASUVORK5CYII=" 
-               alt="Manipal Logo" class="w-9 h-9 object-contain" />
+          <img src="logo.png" alt="Manipal Logo" class="w-8 h-8 object-contain" onerror="this.src='https://placehold.co/100x100?text=MANIPAL'"/>
           <div class="flex flex-col">
             <span class="text-xs tracking-[0.22em] font-serif leading-none">MANIPAL</span>
           </div>
         </div>
       </div>
-      <div class="nav-item-row" onclick="showView('home')">Home</div>
+      <div class="nav-item-row" onclick="showView('profile')">Home</div>
       <div class="nav-item-row" onclick="showView('profile')">Profile</div>
       <div class="nav-item-row">Schedule</div>
       <div class="nav-item-row" onclick="toggleAcademicsSubmenu(event)">
@@ -112,121 +123,108 @@
       <div class="nav-item-row">Support Request</div>
       <div class="nav-item-row">Attendance</div>
       <div class="nav-item-row">Academic Calendar</div>
-      <div class="nav-item-row">Student Success</div>
-      <div class="nav-item-row">Placement Drives</div>
-      <div class="nav-item-row">Feedback</div>
     </div>
 
+    <main class="max-w-4xl mx-auto p-4 md:py-8 w-full">
 
-    <div class="p-4 space-y-4">
-
-      <div id="view-home" class="py-12 text-center space-y-2">
-        <i class="fa-solid fa-house text-3xl text-gray-200 mb-2 block"></i>
-        <p class="text-base text-gray-700">Welcome to SLCM 2.0 Dashboard</p>
-        <p class="text-xs text-gray-400">Open the side menu panel options to view details.</p>
-      </div>
-
-      <div id="view-profile" class="space-y-4 hidden">
-        <div class="flex flex-col items-center text-center pt-2">
-          <div class="w-36 h-44 border border-gray-200 shadow-sm overflow-hidden flex items-center justify-center mb-3 bg-gray-50">
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACmCAMAAADf80S0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAMAUExURf////v7++7u7tra2s7OzsXFxby8vLW1tbS0tKqqqnBwcJmZmYmJiXh4eGdnZ1paWlRUVExMTEJCQjw8PDQ0NCwsLCIiIh4eHhoaGgICAgAAAAwMDBwYGBgICAYGBhQUFBYWFgYFBQoGBhISEhMTExQUFBcXFxkZGRoaGgICCQcFCQ8NDg0PEBYVFRYXFxsbGxwVExsaHBoUGRsbGxwcHB4eHhoXIB0eHh4fICEgICEhISMhIiIhIyMjIyUkIiUkJCclJScnJyomJykoKCcpKSkrKyotKywsLC4uLiwuMTAwMDEvNTEwMTIzMzMzNDQzNTU1NTY1Njc3Nzg3Nzg4ODo4NTo5OTs5Ojo6Ozs7Oz47Oj88PD89PT8+Pj8/P0A9PkE/P0BAQEFAQEFBQUJCQkJDQkNDQ0REREVFRUZGRkdHR0hHRkhISElISElJSUpKSktLS0xLTE1NTU5OTU9PT1BQUFFRUVJSUlNTU1RUVFVVVVZWVldXV1hYWFlZWVpaWlw8P1xbW1xcXF1dXV5eXl9fX2BgYGFhYWJiYmNjY2RkZGVlZWZmZmdnZ2hoaGlpaWpqamtra2xsbG1tbW5ubm9vb3BwcHFxcXJycnNzc3R0dHV1dXZ2dnd3d3h4eHl5eXp6ent7e3x8fH19fX5+fn9/f4CAgIGBgYKCgoODg4SEhIWFhYaGhoeHh4iIiImJiYqKiouLi4yMjI2NjY6Ojo+Pj5CQkJGRkZKSkpOTk5SUlJWVlZaWlpeXl5iYmJmZmZqampubm5ycnJ2dnZ6enp+fn6CgoKGhoaKioqOjo6SkpKWlpaampqenp6ioqKmppaampqqqqqurq6yrq62trbe1uK6urrKysrOzs7S0tLW1tba2tre3t7i4uLm5ubq6uru7u7y8vL29vb6+vr+/v8CAgIGBgoKCgYODg4SFhYaGhYeHh4iIiImJiYqKiouLi4yMjI2NjY6Ojo+Pj5CQkJGRkZKSkpOTk5SUlJWVlZaWlpeXl5iYmJmZmZqampubm5ycnJ2dnZ6enp+fn6CgoKGhoaKioqOjo6SkpKWlpaampqenp6ioqKmpqaC0q/0AAADEdFJOUwD///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8A7q9l5gAAEn9JREFUeNrtlftfG8cVwBvtpYfWs7pY68V6WD8kWfIn27IsWbJlW7IsSxbYssHYgI0N2GAsg8EmBtumaZqmSdM2fUjTh6Zp0iZ9SNv0H/qQ7p3ZfS9IkmVvAn36g99H0q60O/PdO3fuzu7OAn8Y7HbeS/+RfvR6+tEbdv1O+Y1Wf7vS7g9N+qC26V/7kLbpX/uQtuk/gBf9ax+6f6f96L7wVv9R/Vv9N1r8XUf8fXf8fcfbft/XdufXfv9Xe9uXGvHlxo9XwD9a9rX0o9+p8ffdfMdv+/n2u55/4/m3nn8b8m9E/m3Mv9MOf4f/S3Y48iX7D9khf8n9XwBv4C37b+Atw9vSgG8YHvB+w8Oet/m/v7b9Id8wfF88v4E3DPe8eP6eFw89+A7DoZcOvfh77v8F3nD8N2HHP+A7gjf4wDvwD/Y/4Dv0H/iH/gN2OAL/oXfgO3Lv7N6Ze9vunbH7eIftgdkD+O6B2XfNfbfZ9w9YAt/vAAsPzF7A8oDFAwsPzE6YpZnFA7NvsO8fmL3B7Mvmlf9mB7IDb/W/e6CFA/fO7B24bW+b7e6ee7u7e29v77399vbfA2/gDe8NvIE38P7Yd+T9EfbI7D/E99t9/+z9Z9816T97AIn7AAm8Z4G34L2wBODFAwAs7r+3gN9vC+D9bgu8Z7YF7B6wB/Ce2RawB/bI7gH8v9kD/2/u/QOzb5tXfhcYnN0ZmLvM7p2Zu2v2zsDcnb7Z3QO9+waA9QvAdweA9QuA780O9EAbAKwDsHvA9w6AtQB9A7A7ALv/sO8f9A98eALfAfsHvmvMftvsu+a+K/+WHTADwNmdAdgdgN0BvvsOwNsZ4HszwNvpG3hDAF4A3gxg9wAAnH0DgN0DALAHAGPvgNkDAPwHAAtf8h0A7/u34N9scHb6B+buDAzODpCenp6enZ69B6TvAdw9+N/scO/AvdvunbEFe/ftHrhv9v7e96+9v/f9a+/vff/ag/5eB39P7v8SInF7fS/hH9yY8T3X/7S5N36K9S9pX9S+0C/0B5rI8g96Q68B7g8W+A/B63eM0Y8w9A6gBwD3DoD1Y8z+Ma7/f7j/f8A/3H+F2Vewf6fAnP0OADgD+28WmLsDwA/g8B8AGAA6ADjDB3D4f0vYf8vAHv6WwI14/xZ7pPH+vSXi/XuLxPv3FonP968l/D/97mPAnw5M7oB/eB8DcH8/Dszb7v8z+B8G3H4M7LgN7LgB3G6bY6326KPV8Wgdq9XfGoA0AG8XgLcBwNoZ4G0AsH7H4G9/AHD7I7j+fwS4/ZHD6yMDr4/0XvX+Xk8ffb6A+Xv9r3X/6/f1P9DofwA6/S9gp/8FdPpfYID/A9rpfgE6/S9As98B7X5ndvobP7BGP9pD+7bXGqP/Dmhf6F+m/f9Lg/+XZveB9L/Wz/f+o7f7697u31vAn95vd8fP9w7b4ftre0fAn2Gg9+YOnO7+X7fAtp3Z46/tv8H/VdvbAn7b7N8ArL9rAIsA1pPZowF7B/D7BoAdY宏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" 
-                 class="w-full h-full object-cover" alt="Student Profile"/>
+      <div id="view-profile" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="flex flex-col items-center text-center bg-white md:border md:border-gray-200 md:p-6 md:rounded-lg md:shadow-sm">
+          <div class="w-36 h-44 border border-gray-200 overflow-hidden flex items-center justify-center mb-3 bg-gray-50 shadow-sm rounded">
+            <img src="student.png" class="w-full h-full object-cover" alt="Student Profile" onerror="this.src='https://placehold.co/150x200?text=Student+Photo'"/>
           </div>
           <span class="text-sm tracking-wide block text-gray-500">251090570001</span>
           <span class="text-base block text-gray-800 tracking-wide mt-0.5">JAIN DEISHITA JITENDRA</span>
-          
-          <div class="mt-3 px-6 py-0.5 bg-emerald-600 rounded-full text-white text-xs !color-white">
-            Regular
-          </div>
+          <div class="mt-3 px-6 py-0.5 bg-emerald-600 rounded-full text-white text-xs !color-white">Regular</div>
         </div>
 
-        <div class="flex items-center gap-3 pt-2">
-          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAMAAABwKC9vAAAAnFBMVEUAAAD/////mZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmxM09pAAAAMXRSTlMAgP9gEBDQ8PAwYGCgEPDwYGAQ8GCg8KDAwKDAgIDw8MDw8KDAwMDAwICAgICAgICAwMC9gN9HAAAA8UlEQVR42u3b2w6CMBAF0FpAsFpA9vL/f7YmJhqiXAnbe9LknIexmclMAwAAAAAAAAAAAAAAAAAAADjS6E69Xmsc99FpGveVp/H866eM+7KOfv+8f67Xp/pMecg2Sft9Z/FId8gY4qFs6ZCx8FCWBMhA9ZArD8lQOOSmAorOIdshGZpD9kPCbX9Izg4p0B6yXWbIDHHIbshmX4fshzjkKOTuN0MctB9ypw6ZIdshDjkMudMccofekO2QO80h++WQE8UhxyE3zSG75ZBwz0NidshmX4fshzjkKOTuN0MctB9ypw6ZIdshDpniHwAAAAAAAAAAAAAAAAAA8EwfoL8EMV+K69kAAAAASUVORK5CYII=" 
-               alt="Manipal Badge" class="w-10 h-10 object-contain" />
-          <div class="text-xs leading-tight text-gray-600">
-            Manipal Institute of Technology (MIT),<br>Manipal
+        <div class="md:col-span-2 space-y-4">
+          <div class="bg-white border border-gray-200 p-4 rounded-lg flex items-center gap-3 shadow-sm">
+            <img src="logo.png" alt="Manipal Badge" class="w-10 h-10 object-contain" onerror="this.src='https://placehold.co/100x100?text=MIT'"/>
+            <div class="text-xs leading-tight text-gray-600">
+              Manipal Institute of Technology (MIT),<br>Manipal
+            </div>
           </div>
-        </div>
 
-        <div class="bg-orange-50/50 p-1 text-xs space-y-2">
-          <div class="pb-2 text-gray-800 border-b border-orange-200/40">
-            Bachelor of Technology (B.Tech.) in Mathematics and Computing
-          </div>
-          <div class="pt-1 flex items-center gap-1.5 text-orange-600">
-            <i class="fa-solid fa-envelope !color-orange-600"></i>
-            <span class="!color-orange-600">deishita.mitmpl2025@learner.manipal.edu</span>
-          </div>
-          <div class="grid grid-cols-1 gap-1.5 text-gray-500 pt-1">
-            <div>Roll No. : CA070</div>
-            <div>Admission Date: 01-07-2025</div>
-            <div>Total Terms: 8</div>
-            <div>Academic Level:</div>
-            <div>Ongoing Semester: II</div>
-            <div>Birth Date:</div>
-            <div>Program Type: B.Tech</div>
-            <div>Program Code: 957</div>
-            <div>Expected Graduation Date: <span class="text-emerald-600 !color-emerald-600">01-07-2029</span></div>
+          <div class="bg-orange-50/40 border border-orange-100 p-5 rounded-lg text-xs space-y-3 shadow-sm">
+            <div class="pb-2 text-gray-800 border-b border-orange-200/40 text-sm">
+              Bachelor of Technology (B.Tech.) in Mathematics and Computing
+            </div>
+            <div class="pt-1 flex items-center gap-1.5 text-orange-600">
+              <i class="fa-solid fa-envelope !color-orange-600"></i>
+              <span class="!color-orange-600">deishita.mitmpl2025@learner.manipal.edu</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-gray-500 pt-2">
+              <div>Roll No. : CA070</div>
+              <div>Admission Date: 01-07-2025</div>
+              <div>Total Terms: 8</div>
+              <div>Ongoing Semester: II</div>
+              <div>Program Code: 957</div>
+              <div>Expected Graduation Date: <span class="text-emerald-600 !color-emerald-600">01-07-2029</span></div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div id="view-results" class="space-y-4 hidden">
+      <div id="view-results" class="space-y-6 hidden">
         <div class="flex gap-6 text-sm whitespace-nowrap border-b border-gray-200 px-1">
           <button class="py-2 text-gray-400">Ongoing Semester</button>
           <button class="py-2 border-b-2 orange-active">Result</button>
           <button class="py-2 text-gray-400">More <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
         </div>
 
-        <div class="space-y-4">
-          <div>
-            <label class="text-[11px] text-gray-400 uppercase tracking-wide block mb-1">Select Semester</label>
-            <select id="semester-select" onchange="switchSemester(this.value)" class="w-full bg-white border border-gray-300 rounded px-2.5 py-2 text-sm focus:outline-none cursor-pointer">
-              <option value="sem2">Semester - II</option>
-              <option value="sem1">Semester - I</option>
-            </select>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          <div class="bg-white border border-gray-200 p-5 rounded-lg shadow-sm space-y-4">
+            <div>
+              <label class="text-[11px] text-gray-400 uppercase tracking-wide block mb-1">Select Semester</label>
+              <select id="semester-select" onchange="switchSemester(this.value)" class="w-full bg-white border border-gray-300 rounded px-2.5 py-2 text-sm focus:outline-none cursor-pointer">
+                <option value="sem2">Semester - II</option>
+                <option value="sem1">Semester - I</option>
+              </select>
+            </div>
+
+            <div class="space-y-2.5 text-xs divider-line">
+              <div class="flex justify-between">
+                <span class="text-gray-400">Total Credits Earned:</span>
+                <span class="text-gray-800">40</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Credit Earned:</span>
+                <span class="text-gray-800" id="overview-credit">18</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">GPA:</span>
+                <span class="text-gray-800" id="overview-gpa">7.41</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">CGPA:</span>
+                <span class="text-gray-800">7.26</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Avg. Attendance:</span>
+                <span class="text-gray-300">--</span>
+              </div>
+            </div>
           </div>
 
-          <div class="space-y-2.5 text-xs divider-line">
-            <div class="flex justify-between">
-              <span class="text-gray-400">Total Credits Earned:</span>
-              <span class="text-gray-800">40</span>
+          <div class="md:col-span-2 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+            <div class="grid grid-cols-4 text-center text-[10px] uppercase text-gray-400 bg-gray-50/70 border-b border-gray-200 py-3 px-4">
+              <div class="text-left">C... Code</div>
+              <div class="text-left">C... Name</div>
+              <div>I... M...</div>
+              <div>G...</div>
             </div>
-            <div class="flex justify-between">
-              <span class="text-gray-400">Credit Earned:</span>
-              <span class="text-gray-800" id="overview-credit">18</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-400">GPA:</span>
-              <span class="text-gray-800" id="overview-gpa">7.41</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-400">CGPA:</span>
-              <span class="text-gray-800">7.26</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-400">Avg. Attendance:</span>
-              <span class="text-gray-300">--</span>
-            </div>
+            <div id="subject-list" class="divide-y divide-gray-100"></div>
           </div>
-        </div>
-
-        <div class="overflow-hidden border-t border-gray-100">
-          <div class="grid grid-cols-4 text-center text-[10px] uppercase text-gray-400 bg-gray-50/70 border-b border-gray-200 py-2.5 px-2">
-            <div class="text-left">C... Code</div>
-            <div class="text-left">C... Name</div>
-            <div>I... M...</div>
-            <div>G...</div>
-          </div>
-          <div id="subject-list" class="divide-y divide-gray-100 max-h-[400px] overflow-y-auto"></div>
         </div>
       </div>
 
-    </div>
+    </main>
   </div>
 
-  <div class="bg-orange-50/60 p-4 text-center text-[11px] max-w-md mx-auto border-t border-orange-100/40">
+  <footer class="bg-orange-50/60 p-4 text-center text-[11px] border-t border-orange-100/40 w-full mt-12">
     <p>Welcome to the MAHE Student Portal!</p>
-  </div>
+  </footer>
 
   <script>
     const academicData = {
@@ -261,7 +259,6 @@
       }
     };
 
-    // Main Interactive Menu Panel Toggle Logic Engine
     function toggleMenu(show) {
       document.getElementById("menu-overlay").style.display = show ? "block" : "none";
       document.getElementById("menu-panel").style.display = show ? "block" : "none";
@@ -272,15 +269,11 @@
       document.getElementById("academics-sub").classList.toggle("hidden");
     }
 
-    // Comprehensive Interface Route Router View Controller
     function showView(viewId) {
-      document.getElementById("view-home").classList.add("hidden");
       document.getElementById("view-profile").classList.add("hidden");
       document.getElementById("view-results").classList.add("hidden");
       
-      if (viewId === 'home') {
-        document.getElementById("view-home").classList.remove("hidden");
-      } else if (viewId === 'profile') {
+      if (viewId === 'profile') {
         document.getElementById("view-profile").classList.remove("hidden");
       } else if (viewId === 'results') {
         document.getElementById("view-results").classList.remove("hidden");
@@ -290,7 +283,6 @@
       toggleMenu(false);
     }
 
-    // Dynamic Database Record Rendering Node Injection
     function switchSemester(semKey) {
       const data = academicData[semKey];
       document.getElementById("overview-credit").innerText = data.credits;
@@ -301,7 +293,7 @@
       
       data.subjects.forEach(item => {
         const rowHTML = `
-          <div class="grid grid-cols-4 items-center text-xs py-3.5 px-2 bg-white border-b border-gray-100">
+          <div class="grid grid-cols-4 items-center text-xs py-3.5 px-4 bg-white border-b border-gray-100">
             <div class="text-gray-800 text-left tracking-tight">${item.code}</div>
             <div class="text-gray-400 text-left pr-1 text-[11px] leading-tight">${item.name}</div>
             <div class="text-center">${item.internal}</div>
@@ -312,8 +304,8 @@
       });
     }
 
-    // Initial Launch Landing Route Pointer Configuration
-    showView('home');
+    // Direct initial payload sets up Profile view on launch instantly
+    showView('profile');
   </script>
 </body>
 </html>
