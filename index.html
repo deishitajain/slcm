@@ -99,7 +99,6 @@
 
       <!-- Right Side Utility Area hosting Enlarged Corporate Logo cleanly next to DJ token -->
       <div class="flex items-center justify-end gap-4">
-        <i class="fa-solid fa-bell text-xl text-[#f07f3e] mr-1"></i>
         <img src="logo.png" alt="Manipal Logo" class="w-24 h-24 object-contain" onerror="this.src='https://placehold.co/150x150?text=MANIPAL'"/>
         <div class="w-8 h-8 rounded-full bg-neutral-300 flex items-center justify-center text-xs font-medium border border-gray-400 shrink-0">
           DJ
@@ -110,7 +109,7 @@
     <!-- ================= MOBILE SLIDE-DOWN MENU PANEL ================= -->
     <div id="menu-overlay" class="nav-overlay" onclick="toggleMenu(false)"></div>
     <div id="menu-panel" class="nav-menu-panel shadow-2xl md:hidden">
-      <div class="portal-header px-4 py-4 flex items-center justify-between border-b border-gray-200">
+      <div class="portal-header px-4 py-2 flex items-center justify-between border-b border-gray-200">
         <button onclick="toggleMenu(false)" class="focus:outline-none flex items-center justify-center">
           <i class="fa-solid fa-xmark text-xl text-gray-500 cursor-pointer"></i>
         </button>
@@ -130,8 +129,7 @@
     <!-- Academics Popup Modal (Only View Results Enabled) -->
     <div id="modal-academics" class="popup-modal">
       <div class="flex justify-between items-center border-b border-gray-100 pb-2 mb-4">
-        <span class="font-semibold text-gray-800">Academic Hub</span>
-        <button onclick="closePopups()"><i class="fa-solid fa-xmark text-gray-400"></i></button>
+        <span class="font-semibold text-gray-800">Academics</span>
       </div>
       <div class="space-y-3">
         <button onclick="showView('results')" class="w-full text-left py-2.5 px-3 bg-gray-50 hover:bg-orange-50 rounded text-sm transition">View Performance Results</button>
