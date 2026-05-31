@@ -1,286 +1,478 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SLCM 2.0</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Strict uniform minimalist typography formatting rules */
-    * { 
-      font-family: sans-serif !important;
-      color: #4a4a4a !important; 
-      font-weight: 400 !important;
-    }
-    .portal-header { background-color: #f4eee1 !important; }
-    .orange-active { border-color: #f07f3e !important; }
-    .divider-line { border-top: 1px solid #f3f4f6; padding-top: 12px; margin-top: 16px; }
-    
-    /* Responsive Navigation Overlays for Mobile Only */
-    .nav-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.4);
-      z-index: 100;
-      display: none;
-    }
-    .nav-menu-panel {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background-color: #f28e2b;
-      z-index: 101;
-      display: none;
-    }
-    .nav-item-row {
-      padding: 14px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-      color: #ffffff !important;
-      font-size: 15px;
-      cursor: pointer;
-    }
-    
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: #f8fafc; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        :root {
+            --primary-orange: #E65100;
+            --dark-blue: #0D47A1;
+            --text-dark: #333333;
+            --bg-light: #F5F7FA;
+            --border-color: #E0E0E0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background-color: #FFFFFF;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+        }
+
+        .logo-container {
+            padding: 0 24px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Scaled up to visually match the navigation text sizing */
+        .logo-container img {
+            height: 42px; 
+            width: auto;
+            object-fit: contain;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item {
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #555555;
+            cursor: pointer;
+            text-transform: capitalize;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: #F0F4F8;
+            color: var(--dark-blue);
+        }
+
+        .nav-item.active {
+            background-color: #E3F2FD;
+            color: var(--dark-blue);
+            border-left-color: var(--dark-blue);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .welcome-card {
+            background: #FFFFFF;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--primary-orange);
+        }
+
+        .welcome-card h1 {
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        /* Modal Overlay & Popups */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: #FFFFFF;
+            width: 90%;
+            max-width: 850px;
+            max-height: 85vh;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            background-color: var(--dark-blue);
+            color: #FFFFFF;
+            padding: 18px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #FFFFFF;
+            font-size: 24px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* Unified Result Tables */
+        .semester-section {
+            margin-bottom: 30px;
+        }
+
+        .semester-title {
+            color: var(--primary-orange);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #FFE0B2;
+            padding-bottom: 4px;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            background: #FFFFFF;
+            table-layout: fixed; /* Ensures column widths obey explicit percentages */
+        }
+
+        /* Default column setups */
+        th:nth-child(1), td:nth-child(1) { width: 15%; } /* Code */
+        th:nth-child(2), td:nth-child(2) { width: 55%; } /* Subject Name */
+        th:nth-child(3), td:nth-child(3) { width: 15%; } /* Credits */
+        th:nth-child(4), td:nth-child(4) { width: 15%; } /* Grade */
+
+        /* Expandable state triggered by class toggle */
+        table.expanded th:nth-child(1), table.expanded td:nth-child(1) { width: 25%; }
+        table.expanded th:nth-child(2), table.expanded td:nth-child(2) { width: 55%; }
+        table.expanded th:nth-child(3), table.expanded td:nth-child(3) { width: 10%; }
+        table.expanded th:nth-child(4), table.expanded td:nth-child(4) { width: 10%; }
+
+        th, td {
+            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: width 0.2s ease;
+        }
+
+        th {
+            background-color: #F8F9FA;
+            color: #555555;
+            font-weight: 600;
+            cursor: pointer; /* Subtle pointer indicator */
+        }
+
+        tr:nth-child(even) {
+            background-color: #F9FAFB;
+        }
+
+        /* Attendance Utilities */
+        .attendance-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #F8F9FA;
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-card p {
+            font-size: 14px;
+            color: #666666;
+        }
+
+        .stat-card h3 {
+            font-size: 24px;
+            color: var(--dark-blue);
+            margin-top: 4px;
+        }
+    </style>
 </head>
-<body class="bg-white antialiased min-h-screen flex flex-col justify-between">
+<body>
 
-  <div>
-    <!-- ================= TOP NAVIGATION BAR ================= -->
-    <div class="portal-header px-4 py-3 flex items-center justify-between border-b border-gray-200 sticky top-0 z-40">
-      <div class="flex items-center gap-3 w-1/3">
-        <!-- Hamburger (Hidden on Desktop) -->
-        <button onclick="toggleMenu(true)" class="focus:outline-none flex items-center justify-center md:hidden" aria-label="Menu">
-          <i class="fa-solid fa-bars text-xl text-gray-600 cursor-pointer"></i>
-        </button>
-        
-        <!-- Desktop Horizontal Navigation Links (Hidden on Mobile) -->
-        <nav class="hidden md:flex items-center gap-6 text-sm">
-          <button onclick="showView('profile')" class="hover:text-orange-500 transition">Profile</button>
-          <button onclick="showView('results')" class="hover:text-orange-500 transition">Academics</button>
-          <button class="hover:text-orange-500 transition">Schedule</button>
-          <button class="hover:text-orange-500 transition">Applications</button>
-        </nav>
-      </div>
-
-      <!-- Center Aligned Upgraded Logo Format -->
-      <div class="flex justify-center items-center w-1/3">
-        <img src="logo.png" alt="Manipal Logo" class="w-12 h-12 object-contain" onerror="this.src='https://placehold.co/150x150?text=MANIPAL'"/>
-      </div>
-      
-      <div class="flex items-center justify-end gap-4 w-1/3">
-        <i class="fa-solid fa-bell text-xl text-[#f07f3e]"></i>
-        <div class="w-7 h-7 rounded-full bg-neutral-300 flex items-center justify-center text-[10px] border border-gray-400">
-          DJ
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="logo-container">
+            <!-- Alternative placeholder fallback provided to guarantee clean rendering -->
+            <img src="https://images.shiksha.com/mediadata/images/1587032431php9m8Z98.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/en/d/d0/Manipal_Institute_of_Technology_logo.png';" alt="Manipal Logo">
         </div>
-      </div>
-    </div>
+        <ul class="nav-menu">
+            <li class="nav-item" onclick="setActiveNav(this)">profile</li>
+            <li class="nav-item" onclick="setActiveNav(this)">schedule</li>
+            <li class="nav-item" onclick="openModal('academics-modal')">academics</li>
+            <li class="nav-item" onclick="setActiveNav(this)">applications</li>
+            <li class="nav-item" onclick="setActiveNav(this)">support request</li>
+            <li class="nav-item" onclick="openModal('attendance-modal')">attendance</li>
+            <li class="nav-item" onclick="setActiveNav(this)">feedback</li>
+        </ul>
+    </nav>
 
-    <!-- ================= MOBILE SLIDE-DOWN MENU PANEL ================= -->
-    <div id="menu-overlay" class="nav-overlay" onclick="toggleMenu(false)"></div>
-    <div id="menu-panel" class="nav-menu-panel shadow-2xl md:hidden">
-      <div class="portal-header px-4 py-3 flex items-center justify-between border-b border-gray-200">
-        <div class="flex items-center gap-3">
-          <button onclick="toggleMenu(false)" class="focus:outline-none flex items-center justify-center">
-            <i class="fa-solid fa-xmark text-xl text-gray-500 cursor-pointer"></i>
-          </button>
+    <!-- Main Workspace Frame -->
+    <main class="main-content">
+        <div class="welcome-card">
+            <h1>Welcome back to your Dashboard</h1>
+            <p>Select a separate navigation path or open specific interactive models from the sidebar options panel.</p>
         </div>
-        <img src="logo.png" alt="Manipal Logo" class="w-10 h-10 object-contain mr-4" onerror="this.src='https://placehold.co/100x100?text=MANIPAL'"/>
-      </div>
-      <div class="nav-item-row" onclick="showView('profile')">Home</div>
-      <div class="nav-item-row" onclick="showView('profile')">Profile</div>
-      <div class="nav-item-row" onclick="showView('results')">Academics (Results)</div>
-      <div class="nav-item-row">Schedule</div>
-      <div class="nav-item-row">Applications</div>
-      <div class="nav-item-row">Support Request</div>
-      <div class="nav-item-row">Attendance</div>
-      <div class="nav-item-row">Academic Calendar</div>
-    </div>
-
-    <!-- ================= MAIN SCROLLABLE WRAPPER ================= -->
-    <main class="max-w-4xl mx-auto p-4 md:py-8 w-full">
-
-      <!-- VIEW A: PROFILE INFORMATION DASHBOARD PAGE -->
-      <div id="view-profile" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        <!-- Left Column: Photo Frame & Identity Metrics -->
-        <div class="flex flex-col items-center text-center bg-white md:border md:border-gray-200 md:p-6 md:rounded-lg md:shadow-sm">
-          <div class="w-36 h-44 border border-gray-200 overflow-hidden flex items-center justify-center mb-3 bg-gray-50 shadow-sm rounded">
-            <img src="student.png" class="w-full h-full object-cover" alt="Student Profile" onerror="this.src='https://placehold.co/150x200?text=Student+Photo'"/>
-          </div>
-          <span class="text-sm tracking-wide block text-gray-500">251090570001</span>
-          <span class="text-base block text-gray-800 tracking-wide mt-0.5">JAIN DEISHITA JITENDRA</span>
-          <div class="mt-3 px-6 py-0.5 bg-emerald-600 rounded-full text-white text-xs !color-white">Regular</div>
-        </div>
-
-        <!-- Right Column: Academic Particulars Layout Box -->
-        <div class="md:col-span-2">
-          <div class="bg-orange-50/40 border border-orange-100 p-5 rounded-lg text-xs space-y-3 shadow-sm h-full">
-            <div class="pb-2 text-gray-800 border-b border-orange-200/40 text-sm">
-              Bachelor of Technology (B.Tech.) in Mathematics and Computing
-            </div>
-            <div class="pt-1 flex items-center gap-1.5 text-orange-600">
-              <i class="fa-solid fa-envelope !color-orange-600"></i>
-              <span class="!color-orange-600">deishita.mitmpl2025@learner.manipal.edu</span>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-gray-500 pt-2">
-              <div>Roll No. : CA070</div>
-              <div>Admission Date: 01-07-2025</div>
-              <div>Total Terms: 8</div>
-              <div>Ongoing Semester: II</div>
-              <div>Program Code: 957</div>
-              <div>Expected Graduation Date: <span class="text-emerald-600 !color-emerald-600">01-07-2029</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- VIEW B: SEMESTER GRADE LOG TRACKING TABLE SHEET -->
-      <div id="view-results" class="space-y-6 hidden">
-        <div class="flex gap-6 text-sm whitespace-nowrap border-b border-gray-200 px-1">
-          <button class="py-2 text-gray-400">Ongoing Semester</button>
-          <button class="py-2 border-b-2 orange-active">Result</button>
-          <button class="py-2 text-gray-400">More <i class="fa-solid fa-chevron-down text-[9px]"></i></button>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-          <!-- Control Parameters Selector Block -->
-          <div class="bg-white border border-gray-200 p-5 rounded-lg shadow-sm space-y-4">
-            <div>
-              <label class="text-[11px] text-gray-400 uppercase tracking-wide block mb-1">Select Semester</label>
-              <select id="semester-select" onchange="switchSemester(this.value)" class="w-full bg-white border border-gray-300 rounded px-2.5 py-2 text-sm focus:outline-none cursor-pointer">
-                <option value="sem2">Semester - II</option>
-                <option value="sem1">Semester - I</option>
-              </select>
-            </div>
-
-            <div class="space-y-2.5 text-xs divider-line">
-              <div class="flex justify-between">
-                <span class="text-gray-400">Total Credits Earned:</span>
-                <span class="text-gray-800">40</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-400">Credit Earned:</span>
-                <span class="text-gray-800" id="overview-credit">18</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-400">GPA:</span>
-                <span class="text-gray-800" id="overview-gpa">7.41</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-400">CGPA:</span>
-                <span class="text-gray-800">7.26</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-400">Avg. Attendance:</span>
-                <span class="text-gray-300">--</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Grade Payload Data Table Display Panel -->
-          <div class="md:col-span-2 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-            <div class="grid grid-cols-4 text-center text-[10px] uppercase text-gray-400 bg-gray-50/70 border-b border-gray-200 py-3 px-4">
-              <div class="text-left">C... Code</div>
-              <div class="text-left">C... Name</div>
-              <div>I... M...</div>
-              <div>G...</div>
-            </div>
-            <div id="subject-list" class="divide-y divide-gray-100"></div>
-          </div>
-        </div>
-      </div>
-
     </main>
-  </div>
 
-  <!-- ================= PLAIN SYSTEM FOOTER ================= -->
-  <footer class="bg-orange-50/60 p-4 text-center text-[11px] border-t border-orange-100/40 w-full mt-12">
-    <p>Welcome to the MAHE Student Portal!</p>
-  </footer>
+    <!-- Backdrop Overlay Container -->
+    <div class="modal-overlay" id="modal-overlay" onclick="closeAllModals()">
+        
+        <!-- Academics / Results Modal -->
+        <div class="modal-box" id="academics-modal" onclick="stopPropagation(event)">
+            <div class="modal-header">
+                <h2>Academic Performance History</h2>
+                <button class="close-btn" onclick="closeAllModals()">&times;</button>
+            </div>
+            <div class="modal-body">
+                
+                <!-- Semester 1 Performance View -->
+                <div class="semester-section">
+                    <div class="semester-title">Semester 1 Results</div>
+                    <div class="table-container">
+                        <table id="sem1-table" onclick="toggleColumnWidth('sem1-table')">
+                            <thead>
+                                <tr>
+                                    <th>Course Code</th>
+                                    <th>Course Title</th>
+                                    <th>Credits</th>
+                                    <th>Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>CHM 101</td>
+                                    <td>Engineering Chemistry</td>
+                                    <td>4</td>
+                                    <td><strong>B</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>HUM 101</td>
+                                    <td>Communication Skills in English</td>
+                                    <td>3</td>
+                                    <td>C</td>
+                                </tr>
+                                <tr>
+                                    <td>MAT 101</td>
+                                    <td>Engineering Mathematics I</td>
+                                    <td>4</td>
+                                    <td><strong>D</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>CSE 101</td>
+                                    <td>Problem Solving using Computers / Programming</td>
+                                    <td>4</td>
+                                    <td><strong>C</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>ME 101</td>
+                                    <td>Computer Aided Engineering Graphics</td>
+                                    <td>3</td>
+                                    <td><strong>B</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-  <script>
-    const academicData = {
-      sem1: {
-        gpa: "7.10", credits: 22,
-        subjects: [
-          { code: "IPE 1071", name: "UNIV... HUM... VALU...", internal: "--", grade: "S" },
-          { code: "HUM 1072", name: "HUM... RIGH... AND CON...", internal: "--", grade: "S" },
-          { code: "CIV 1003", name: "ENGI... MEC... AND SMART...", internal: 39, grade: "C" },
-          { code: "CSS 1001", name: "PRO... FOR PRO... SOLV...", internal: 30, grade: "D" },
-          { code: "MAT 1103", name: "COMP... MATH... - I", internal: 30, grade: "C" }, 
-          { code: "MME 1022", name: "COM... AIDED ENGI... GRA...", internal: 45, grade: "C" },
-          { code: "CSS 1021", name: "PRO... FOR PRO... SOLV... LAB", internal: 49, grade: "A" },
-          { code: "ELE 1003", name: "FUND... OF ELECTR... ENGIN...", internal: 21, grade: "D" },
-          { code: "CIV 1004", name: "ENVI... STUD...", internal: 40, grade: "A" },
-          { code: "CHM 1003", name: "APPL... CHEM... FOR ENGIN...", internal: 37, grade: "C" }
-        ]
-      },
-      sem2: {
-        gpa: "7.41", credits: 18,
-        subjects: [
-          { code: "HUM 1071", name: "COM... SKILLS IN ENGL...", internal: 36, grade: "B" },
-          { code: "PHY 1003", name: "PHY... APPL... PHYS... FOR ENGI...", internal: 32, grade: "C" },
-          { code: "MME 1003", name: "MME... FUN... OF MEC... ENGI...", internal: 41, grade: "B" },
-          { code: "ECE 1003", name: "ECE... FUN... OF ELEC...", internal: 34, grade: "C" }, 
-          { code: "MME 1021", name: "MME... WOR... PRAC...", internal: 79, grade: "A" },
-          { code: "CSS 1002", name: "CSS... INTR... TO OBJE... ORIE... PRO...", internal: 38, grade: "B" }, 
-          { code: "CSS 1023", name: "CSS... INTR... TO OBJE... ORIE... PRO... LAB", internal: 54, grade: "B" },
-          { code: "CSS 1022", name: "CSS... DATA VISU...", internal: 46, grade: "B" },
-          { code: "MAT 1203", name: "MAT... COM... MAT... - II", internal: 36, grade: "F" } 
-        ]
-      }
-    };
+                <!-- Semester 2 Performance View -->
+                <div class="semester-section">
+                    <div class="semester-title">Semester 2 Results</div>
+                    <div class="table-container">
+                        <table id="sem2-table" onclick="toggleColumnWidth('sem2-table')">
+                            <thead>
+                                <tr>
+                                    <th>Course Code</th>
+                                    <th>Course Title</th>
+                                    <th>Credits</th>
+                                    <th>Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ME 102</td>
+                                    <td>Fundamentals of Mechanical Engineering (FME)</td>
+                                    <td>4</td>
+                                    <td><strong>A</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>HUM 102</td>
+                                    <td>Communication Skills in English II</td>
+                                    <td>3</td>
+                                    <td><strong>A</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>MAT 102</td>
+                                    <td>Engineering Mathematics II</td>
+                                    <td>4</td>
+                                    <td>B</td>
+                                </tr>
+                                <tr>
+                                    <td>PHY 101</td>
+                                    <td>Engineering Physics</td>
+                                    <td>4</td>
+                                    <td>C</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-    function toggleMenu(show) {
-      document.getElementById("menu-overlay").style.display = show ? "block" : "none";
-      document.getElementById("menu-panel").style.display = show ? "block" : "none";
-    }
+            </div>
+        </div>
 
-    function showView(viewId) {
-      document.getElementById("view-profile").classList.add("hidden");
-      document.getElementById("view-results").classList.add("hidden");
-      
-      if (viewId === 'profile') {
-        document.getElementById("view-profile").classList.remove("hidden");
-      } else if (viewId === 'results') {
-        document.getElementById("view-results").classList.remove("hidden");
-        switchSemester("sem2");
-        document.getElementById("semester-select").value = "sem2";
-      }
-      toggleMenu(false);
-    }
+        <!-- Attendance Tracking Modal -->
+        <div class="modal-box" id="attendance-modal" onclick="stopPropagation(event)">
+            <div class="modal-header">
+                <h2>Attendance Summary</h2>
+                <button class="close-btn" onclick="closeAllModals()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="attendance-summary">
+                    <div class="stat-card">
+                        <p>Overall Aggregate</p>
+                        <h3>88.5%</h3>
+                    </div>
+                    <div class="stat-card">
+                        <p>Total Classes Attended</p>
+                        <h3>177 / 200</h3>
+                    </div>
+                    <div class="stat-card">
+                        <p>Status</p>
+                        <h3 style="color: green;">Safe</h3>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="attendance-table" onclick="toggleColumnWidth('attendance-table')">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Subject Name</th>
+                                <th>Conducted</th>
+                                <th>Attended (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>MAT 102</td>
+                                <td>Engineering Mathematics II</td>
+                                <td>40</td>
+                                <td>36 (90%)</td>
+                            </tr>
+                            <tr>
+                                <td>ME 102</td>
+                                <td>Fundamentals of Mechanical Engineering</td>
+                                <td>36</td>
+                                <td>31 (86%)</td>
+                            </tr>
+                            <tr>
+                                <td>PHY 101</td>
+                                <td>Engineering Physics</td>
+                                <td>44</td>
+                                <td>38 (86.3%)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    function switchSemester(semKey) {
-      const data = academicData[semKey];
-      document.getElementById("overview-credit").innerText = data.credits;
-      document.getElementById("overview-gpa").innerText = data.gpa;
-      
-      const listContainer = document.getElementById("subject-list");
-      listContainer.innerHTML = "";
-      
-      data.subjects.forEach(item => {
-        const rowHTML = `
-          <div class="grid grid-cols-4 items-center text-xs py-3.5 px-4 bg-white border-b border-gray-100">
-            <div class="text-gray-800 text-left tracking-tight">${item.code}</div>
-            <div class="text-gray-400 text-left pr-1 text-[11px] leading-tight">${item.name}</div>
-            <div class="text-center">${item.internal}</div>
-            <div class="text-center text-gray-700">${item.grade}</div>
-          </div>
-        `;
-        listContainer.innerHTML += rowHTML;
-      });
-    }
+    </div>
 
-    // Direct initial payload sets up Profile view on launch instantly
-    showView('profile');
-  </script>
+    <script>
+        // Modal Window View Management
+        function openModal(modalId) {
+            document.getElementById('modal-overlay').style.display = 'flex';
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeAllModals() {
+            document.getElementById('modal-overlay').style.display = 'none';
+            const modals = document.querySelectorAll('.modal-box');
+            modals.forEach(modal => modal.style.display = 'none');
+        }
+
+        function stopPropagation(event) {
+            event.stopPropagation();
+        }
+
+        // Active State UI Handler for Sidebar Tabs
+        function setActiveNav(element) {
+            const items = document.querySelectorAll('.nav-item');
+            items.forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // Click-to-Expand Width Toggle System
+        function toggleColumnWidth(tableId) {
+            const table = document.getElementById(tableId);
+            table.classList.toggle('expanded');
+        }
+    </script>
 </body>
 </html>
+
+```
