@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAHE Parent Portal Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { 
+      font-family: sans-serif !important;
+      color: #4a4a4a !important; 
+      font-weight: 400 !important;
+    }
+    .portal-header { background-color: #f4eee1 !important; }
+    .orange-active { border-color: #f07f3e !important; }
+    .divider-line { border-top: 1px solid #f3f4f6; padding-top: 12px; margin-top: 16px; }
+    
+    /* Login Page Specific Background Formatting mimicking image_28.png */
+    .login-bg {
+      background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.1)), 
+                  url('https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1000&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center bottom;
+    }
+
+    /* Navigation Panel Overlays */
+    .nav-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 100;
+      display: none;
+    }
+    .nav-menu-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #f28e2b;
+      z-index: 101;
+      display: none;
+    }
+    .nav-item-row {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      color: #ffffff !important;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    /* Modal Popups layout */
+    .popup-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 400px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+      z-index: 150;
+      display: none;
+      padding: 20px;
+    }
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      z-index: 140;
+      display: none;
+    }
+    
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #f8fafc; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  </style>
+</head>
+<body class="bg-white antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- ================= AUTH LOGIN SCREEN WORKSPACE (IMAGE_28.PNG FORMAT) ================= -->
+  <div id="login-screen" class="login-bg fixed inset-0 z-50 flex flex-col justify-start items-center px-6 pt-24 overflow-y-auto">
+    <div class="w-full max-w-sm flex flex-col items-center space-y-8">
+      
+      <!-- Center Main Logo Branding Badge Frame -->
+      <div class="w-full flex justify-center pb-4">
+        <img src="logo.png" alt="Manipal Academy of Higher Education" class="w-64 object-contain" onerror="this.src='https://placehold.co/300x100?text=MANIPAL'"/>
+      </div>
+
+      <!-- Credentials Form Entry Nodes -->
+      <div class="w-full space-y-3.5">
+        <div class="relative bg-white border border-gray-300 rounded-md flex items-center px-3 shadow-sm">
+          <span class="text-gray-400 text-sm select-none mr-2">👤</span>
+          <input type="text" placeholder="Username" class="w-full py-3 text-sm focus:outline-none bg-transparent placeholder-gray-400 text-gray-700">
+        </div>
+
+        <div class="relative bg-white border border-gray-300 rounded-md flex items-center px-3 shadow-sm">
+          <span class="text-gray-400 text-sm select-none mr-2">🔒</span>
+          <input type="password" placeholder="Password" class="w-full py-3 text-sm focus:outline-none bg-transparent placeholder-gray-400 text-gray-700">
+        </div>
+      </div>
+
+      <!-- Action Log In Trigger Button -->
+      <div class="w-full pt-1">
+        <button onclick="handleLogin()" class="w-full bg-[#f28e2b] text-white text-base py-3 rounded-md font-medium shadow-sm hover:bg-orange-500 transition tracking-wide text-center !color-white">
+          Log in
+        </button>
+      </div>
+
+      <!-- Secondary Screen Links Copy Text Specifications -->
+      <div class="w-full text-center space-y-4 pt-2 text-[13px]">
+        <div>
+          <a href="#" class="text-white drop-shadow font-medium hover:underline tracking-tight">Forgot your password?</a>
+        </div>
+        <p class="text-white drop-shadow font-medium max-w-[280px] mx-auto leading-relaxed tracking-tight">
+          Your username is your registered email ID followed by ".parent"
+        </p>
+        <div>
+          <a href="#" class="text-white drop-shadow font-medium hover:underline tracking-tight">Are you an employee? Login here</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ================= MAIN PORTAL PORT CONTENT CONTENT (HIDDEN BY DEFAULT) ================= -->
+  <div id="portal-content" class="hidden">
+    <!-- ================= TOP NAVIGATION BAR ================= -->
+    <div class="portal-header px-4 flex items-center justify-between border-b border-gray-200 sticky top-0 z-40" style="height: 50px !important; padding-top: 0px !important; padding-bottom: 0px !important;">
+      <div class="flex items-center gap-3">
+        <!-- Mobile Menu Trigger Button -->
+        <button onclick="toggleMenu(true)" class="focus:outline-none flex items-center justify-center md:hidden" aria-label="Menu">
+          <span class="text-xl text-gray-600 font-bold">≡</span>
+        </button>
+        
+        <!-- Desktop Horizontal Links -->
+        <nav class="hidden md:flex items-center gap-6 text-sm h-full">
+          <button onclick="showView('profile')" class="hover:text-orange-500 transition">Profile</button>
+          <button onclick="openPopup('academics')" class="hover:text-orange-500 transition">Academics</button>
+          <button onclick="showView('schedule')" class="hover:text-orange-500 transition">Schedule</button>
+          <button onclick="showView('applications')" class="hover:text-orange-500 transition">Applications</button>
+          <button onclick="showView('support')" class="hover:text-orange-500 transition">Support Request</button>
+          <button onclick="showView('attendance')" class="hover:text-orange-500 transition">Attendance</button>
+          <button onclick="showView('calendar')" class="hover:text-orange-500 transition">Academic Calendar</button>
+          <button onclick="showView('feedback')" class="hover:text-orange-500 transition">Feedback</button>
+        </nav>
+      </div>
+
+      <!-- Right Utility Branding Profile Token -->
+      <div class="flex items-center justify-end gap-4">
+        <img src="logo.png" alt="Manipal Logo" class="w-24 h-24 object-contain" onerror="this.src='https://placehold.co/150x150?text=MANIPAL'"/>
+        <div class="w-8 h-8 rounded-full bg-neutral-300 flex items-center justify-center text-xs font-medium border border-gray-400 shrink-0">
+          DJ
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MOBILE SLIDE-DOWN OVERLAY MENU PANEL ================= -->
+    <div id="menu-overlay" class="nav-overlay" onclick="toggleMenu(false)"></div>
+    <div id="menu-panel" class="nav-menu-panel shadow-2xl md:hidden">
+      <div class="portal-header px-4 py-4 flex items-center justify-between border-b border-gray-200">
+        <button onclick="toggleMenu(false)" class="focus:outline-none flex items-center justify-center font-bold text-gray-500 text-lg">✕</button>
+      </div>
+      <div class="nav-item-row" onclick="showView('profile')">Profile</div>
+      <div class="nav-item-row" onclick="showView('schedule')">Schedule</div>
+      <div class="nav-item-row" onclick="openPopup('academics')">Academics</div>
+      <div class="nav-item-row" onclick="showView('applications')">Applications</div>
+      <div class="nav-item-row" onclick="showView('support')">Support Request</div>
+      <div class="nav-item-row" onclick="showView('attendance')">Attendance</div>
+      <div class="nav-item-row" onclick="showView('calendar')">Academic Calendar</div>
+      <div class="nav-item-row" onclick="showView('feedback')">Feedback</div>
+    </div>
+
+    <!-- ================= INTERACTIVE POPUP MODALS ================= -->
+    <div id="modal-backdrop" class="modal-backdrop" onclick="closePopups()"></div>
+    
+    <div id="modal-academics" class="popup-modal">
+      <div class="flex justify-between items-center border-b border-gray-100 pb-2 mb-4">
+        <span class="font-semibold text-gray-800">Academic Hub</span>
+        <button onclick="closePopups()" class="w-4 h-4 focus:outline-none font-bold text-gray-400">✕</button>
+      </div>
+      <div class="space-y-3">
+        <button onclick="showView('results')" class="w-full text-left py-2.5 px-3 bg-gray-50 hover:bg-orange-50 rounded text-sm transition">View Performance Results</button>
+      </div>
+    </div>
+
+    <!-- ================= MAIN SCROLLABLE WRAPPER ================= -->
+    <main class="max-w-4xl mx-auto p-4 md:py-8 w-full">
+
+      <!-- VIEW 1: PROFILE DOCK -->
+      <div id="view-profile" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="flex flex-col items-center text-center bg-white md:border md:border-gray-200 md:p-6 md:rounded-lg md:shadow-sm">
+          <div class="w-36 h-44 border border-gray-200 overflow-hidden flex items-center justify-center mb-3 bg-gray-50 shadow-sm rounded relative">
+            <img src="student.png" class="w-full h-full object-cover" alt="Student Profile" onerror="this.src='https://placehold.co/150x200?text=Student+Photo'"/>
+          </div>
+          <span class="text-sm tracking-wide block text-gray-500">251090570001</span>
+          <span class="text-base block text-gray-800 tracking-wide mt-0.5">JAIN DEISHITA JITENDRA</span>
+          <div class="mt-3 px-6 py-0.5 bg-emerald-600 rounded-full text-white text-xs !color-white">Regular</div>
+        </div>
+
+        <div class="md:col-span-2">
+          <div class="bg-orange-50/40 border border-orange-100 p-5 rounded-lg text-xs space-y-3 shadow-sm h-full">
+            <div class="pb-2 text-gray-800 border-b border-orange-200/40 text-sm">
+              Bachelor of Technology (B.Tech.) in Mathematics and Computing
+            </div>
+            <div class="pt-1 flex items-center gap-1.5 text-orange-600">
+              <span>deishita.mitmpl2025@learner.manipal.edu</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-gray-500 pt-2">
+              <div>Roll No. : CA070</div>
+              <div>Admission Date: 01-07-2025</div>
+              <div>Total Terms: 8</div>
+              <div>Ongoing Semester: II</div>
+              <div>Program Code: 957</div>
+              <div>Expected Graduation Date: <span class="text-emerald-600 !color-emerald-600">01-07-2029</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: SEMESTER RESULTS DISPLAY SHEET -->
+      <div id="view-results" class="space-y-6 hidden">
+        <div class="flex gap-6 text-sm whitespace-nowrap border-b border-gray-200 px-1">
+          <button class="py-2 text-gray-400">Ongoing Semester</button>
+          <button class="py-2 border-b-2 orange-active">Result</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          <div class="bg-white border border-gray-200 p-5 rounded-lg shadow-sm space-y-4">
+            <div>
+              <label class="text-[11px] text-gray-400 uppercase tracking-wide block mb-1">Select Semester</label>
+              <select id="semester-select" onchange="switchSemester(this.value)" class="w-full bg-white border border-gray-300 rounded px-2.5 py-2 text-sm focus:outline-none cursor-pointer">
+                <option value="sem2">Semester - II</option>
+                <option value="sem1">Semester - I</option>
+              </select>
+            </div>
+
+            <div class="space-y-2.5 text-xs divider-line">
+              <div class="flex justify-between">
+                <span class="text-gray-400">Total Credits Earned:</span>
+                <span class="text-gray-800">40</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Credit Earned:</span>
+                <span class="text-gray-800" id="overview-credit">18</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">GPA:</span>
+                <span class="text-gray-800" id="overview-gpa">7.41</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">CGPA:</span>
+                <span class="text-gray-800">7.26</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Avg. Attendance:</span>
+                <span class="text-gray-300">--</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="md:col-span-2 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+            <div class="grid grid-cols-4 text-center text-[10px] uppercase text-gray-400 bg-gray-50/70 border-b border-gray-200 py-3 px-4">
+              <div class="text-left">C... Code</div>
+              <div class="text-left">C... Name</div>
+              <div>I... M...</div>
+              <div>G...</div>
+            </div>
+            <div id="subject-list" class="divide-y divide-gray-100"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: ATTENDANCE BLOCK SHEET (Screenshot Format) -->
+      <div id="view-attendance" class="space-y-4 hidden max-w-xl mx-auto">
+        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex flex-col gap-1">
+              <span class="text-base font-semibold text-gray-800 tracking-tight">Attendance Percentage</span>
+              <div class="flex">
+                <span id="attendance-pill-title" class="text-xs px-3 py-0.5 rounded-full border border-orange-300 text-orange-600 font-medium">Semester - II</span>
+              </div>
+            </div>
+            <select id="attendance-sem-select" onchange="renderAttendance(this.value)" class="bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none cursor-pointer shadow-sm">
+              <option value="sem2">Semester - II</option>
+              <option value="sem1">Semester - I</option>
+            </select>
+          </div>
+          <div class="text-xs text-gray-400 pt-1 flex items-center gap-2">
+            <span>Average Attendance</span>
+            <span class="text-orange-500 text-sm font-semibold">↗</span>
+          </div>
+        </div>
+        
+        <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden divide-y divide-gray-100" id="attendance-list">
+          <!-- Populated inside dynamic loop controllers -->
+        </div>
+      </div>
+
+      <!-- VIEW 4: SCHEDULE -->
+      <div id="view-schedule" class="bg-white border border-gray-200 p-6 rounded-lg text-center hidden">
+        <p class="text-sm text-gray-500">Timetable details are systematically initialized for the upcoming academic week cycle.</p>
+      </div>
+
+      <!-- VIEW 5: APPLICATIONS -->
+      <div id="view-applications" class="space-y-5 hidden max-w-xl mx-auto">
+        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+          <h3 class="text-sm font-semibold text-gray-800 tracking-tight mb-4 flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-blue-500 text-white flex items-center justify-center text-[10px]">⠿</span> Available Applications
+          </h3>
+          <p class="text-xs text-gray-400 py-2">No open applications currently.</p>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+          <h3 class="text-sm font-semibold text-gray-800 tracking-tight mb-4 flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-emerald-500 text-white flex items-center justify-center text-[10px]">📋</span> Your Applications
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-gray-100 text-[10px] text-gray-400 uppercase tracking-wider">
+                  <th class="pb-2 font-normal">Application Number ▾</th>
+                  <th class="pb-2 font-normal">Application Type ▾</th>
+                  <th class="pb-2 font-normal">Applied Date ▾</th>
+                  <th class="pb-2 font-normal">Application Status ▾</th>
+                </tr>
+              </thead>
+              <tbody class="text-xs divide-y divide-gray-50">
+                <tr>
+                  <td class="py-3 text-orange-600 font-medium font-mono">IA-00000109...</td>
+                  <td class="py-3 text-gray-700">Branch Change</td>
+                  <td class="py-3 text-gray-500">13-Mar-2026</td>
+                  <td class="py-3 text-emerald-600 font-medium">Approved By Parent</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 6: SUPPORT REQUEST -->
+      <div id="view-support" class="space-y-4 hidden max-w-xl mx-auto">
+        <div class="flex justify-between items-start">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-800 tracking-tight">Student Support Request</h2>
+            <p class="text-xs text-gray-400 mt-0.5">Raise a Support Request here</p>
+          </div>
+          <button class="bg-[#f28e2b] text-white text-xs px-4 py-1.5 rounded-lg shadow-sm font-medium hover:bg-orange-500 transition !color-white">New</button>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex flex-col gap-3 text-xs text-gray-500">
+          <div><span class="text-gray-400 font-medium">Sort by :</span> Last Updated</div>
+          <div class="flex flex-col gap-1">
+            <label class="text-[10px] text-gray-400 uppercase">Filter by Category:</label>
+            <select class="border rounded-lg p-2 bg-gray-50/50 focus:outline-none text-xs w-full sm:w-48">
+              <option>All</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm space-y-4">
+          <div>
+            <span class="text-[10px] text-gray-400 uppercase tracking-wider block">Subject</span>
+            <span class="text-sm font-semibold text-gray-800 tracking-tight">Attendance Condonation-Institute Representation</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 text-xs">
+            <div>
+              <span class="text-gray-400 block text-[10px] uppercase">Case ID</span>
+              <span class="font-medium text-gray-800 font-mono">00006572</span>
+            </div>
+            <div>
+              <span class="text-gray-400 block text-[10px] uppercase">Category</span>
+              <span class="font-medium text-gray-800">Attendance Condonation</span>
+            </div>
+            <div>
+              <span class="text-gray-400 block text-[10px] uppercase">Last Updated</span>
+              <span class="font-medium text-gray-800">25 Apr 2026</span>
+            </div>
+            <div>
+              <span class="text-gray-400 block text-[10px] uppercase">Status</span>
+              <div class="mt-0.5"><span class="px-3 py-0.5 bg-gray-100 rounded-full text-gray-500 font-medium text-[11px]">Approved</span></div>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-100 pt-3">
+            <button class="text-orange-500 text-xs font-medium hover:underline">View Details</button>
+          </div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm space-y-3 text-xs">
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="font-medium text-gray-800">Quick Links</span>
+            <button class="border border-orange-300 text-orange-600 px-3 py-1 rounded-lg text-[11px]">Need Help</button>
+          </div>
+          <div class="space-y-1.5 text-gray-500 font-mono">
+            <div>Call: +91 820 2922035</div>
+            <div>Email: dsa.mahe@manipal.edu</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 7: ACADEMIC CALENDAR -->
+      <div id="view-calendar" class="space-y-4 hidden max-w-xl mx-auto">
+        <h2 class="text-base font-semibold text-gray-800 tracking-tight flex items-center gap-2">
+          <span class="w-5 h-5 rounded bg-orange-500 text-white flex items-center justify-center text-[10px]">📅</span> Academic Calendar
+        </h2>
+
+        <div class="bg-[#f28e2b] text-white p-3.5 rounded-xl flex justify-between items-center shadow-sm !color-white">
+          <span class="text-xs font-semibold uppercase tracking-wider !color-white">Even Semester January - May 2024</span>
+          <span class="text-sm font-bold cursor-pointer !color-white">⇩</span>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm grid grid-cols-2 gap-3">
+          <select class="border rounded p-1.5 text-xs bg-gray-50/50 focus:outline-none text-gray-400" disabled><option>S...</option></select>
+          <select class="border rounded p-1.5 text-xs bg-gray-50/50 focus:outline-none text-gray-400" disabled><option>S...</option></select>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl p-8 text-center shadow-sm space-y-6">
+          <div class="w-full flex justify-center">
+            <div class="relative w-40 h-24 border-b border-sky-200 flex items-end justify-center">
+              <span class="text-4xl text-sky-200 mb-2">🌵</span>
+              <span class="text-2xl text-amber-200 absolute right-4 top-2">☀️</span>
+            </div>
+          </div>
+          <div class="bg-orange-50/50 border border-orange-100 p-4 rounded-xl">
+            <p class="text-xs font-medium text-gray-700 leading-normal">Calendar not uploaded yet.</p>
+            <p class="text-[11px] text-gray-400 mt-1 leading-normal">Please contact your administrator for more details.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 8: FEEDBACK -->
+      <div id="view-feedback" class="bg-white border border-gray-200 p-6 rounded-lg text-center hidden">
+        <p class="text-sm text-gray-500">Official mid-semester course instructor evaluations are currently locked.</p>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ================= SYSTEM FOOTER ================= -->
+  <footer class="bg-orange-50/60 p-4 text-center text-[11px] border-t border-orange-100/40 w-full mt-12">
+    <p>Welcome to the MAHE Student Portal!</p>
+  </footer>
+
+  <!-- ================= LOGIC SCRIPT CONTROLLER ENGINE ================= -->
+  <script>
+    const academicData = {
+      sem1: {
+        gpa: "7.10", credits: 22,
+        subjects: [
+          { code: "CHM 1003", name: "APPLIED CHEMISTRY FOR ENGINEERS", internal: 37, grade: "B", fullCode: "CHM 1003", fullName: "APPLIED CHEMISTRY FOR ENGINEERS", att: "82.86" },
+          { code: "ELE 1003", name: "FUND... OF ELECTR... ENGIN...", internal: 21, grade: "D", fullCode: "ELE 1003", fullName: "FUNDAMENTALS OF ELECTRICAL ENGINEERING", att: "87.50" },
+          { code: "CIV 1004", name: "ENVIRONMENTAL STUDIES", internal: 40, grade: "A", fullCode: "CIV 1004", fullName: "ENVIRONMENTAL STUDIES", att: "77.78" },
+          { code: "CIV 1003", name: "ENGI... MEC... AND SMART...", internal: 39, grade: "C", fullCode: "CIV 1003", fullName: "ENGINEERING MECHANICS AND SMART BUILDINGS", att: "87.80" },
+          { code: "KEY 1022", name: "CREATIVITY, PROBLEM SOLVING AND INNOVATION", internal: "--", grade: "S", fullCode: "KEY 1022", fullName: "CREATIVITY, PROBLEM SOLVING AND INNOVATION", att: "0.00" },
+          { code: "MAT 1103", name: "COMPUTATIONAL MATHEMATICS-I", internal: 30, grade: "D", fullCode: "MAT 1103", fullName: "COMPUTATIONAL MATHEMATICS - I", att: "81.48" }, 
+          { code: "CSS 1001", name: "PROGRAMMING FOR PROBLEM SOLVING", internal: 30, grade: "C", fullCode: "CSS 1001", fullName: "PROGRAMMING FOR PROBLEM SOLVING", att: "84.21" },
+          { code: "CSS 1021", name: "PROGRAMMING FOR PROBLEM SOLVING LAB", internal: 49, grade: "A", fullCode: "CSS 1021", fullName: "PROGRAMMING FOR PROBLEM SOLVING LAB", att: "92.86" },
+          { code: "MME 1022", name: "COMPUTER AIDED ENGINEERING GRAPHICS", internal: 45, grade: "B", fullCode: "MME 1022", fullName: "COMPUTER AIDED ENGINEERING GRAPHICS", att: "84.62" }
+        ]
+      },
+      sem2: {
+        gpa: "7.41", credits: 18,
+        subjects: [
+          { code: "ECE 1003", name: "FUNDAMENTALS OF ELECTRONICS", internal: 34, grade: "C", fullCode: "ECE 1003", fullName: "FUNDAMENTALS OF ELECTRONICS", att: "75.68" },
+          { code: "MME 1003", name: "FUNDAMENTALS OF MECHANICAL ENGINEERING", internal: 41, grade: "A", fullCode: "MME 1003", fullName: "FUNDAMENTALS OF MECHANICAL ENGINEERING", att: "79.49" }, 
+          { code: "MME 1021", name: "WORKSHOP PRACTICE", internal: 79, grade: "A", fullCode: "MME 1021", fullName: "WORKSHOP PRACTICE", att: "92.86" },
+          { code: "PHY 1003", name: "APPLIED PHYSICS FOR ENGINEERS", internal: 32, grade: "C", fullCode: "PHY 1003", fullName: "APPLIED PHYSICS FOR ENGINEERS", att: "77.5" },
+          { code: "CSS 1022", name: "DATA VISUALISATION", internal: 46, grade: "B", fullCode: "CSS 1022", fullName: "DATA VISUALISATION", att: "92.31" },
+          { code: "CSS 1023", name: "INTRODUCTION TO OBJECT ORIENTED PROGRAMMING LAB", internal: 54, grade: "B", fullCode: "CSS 1023", fullName: "INTRODUCTION TO OBJECT ORIENTED PROGRAMMING LAB", att: "85.71" },
+          { code: "CSS 1002", name: "INTRODUCTION TO OBJECT ORIENTED PROGRAMMING", internal: 38, grade: "B", fullCode: "CSS 1002", fullName: "INTRODUCTION TO OBJECT ORIENTED PROGRAMMING", att: "83.78" }, 
+          { code: "MAT 1203", name: "COMPUTATIONAL MATHEMATICS - II", internal: 36, grade: "F", fullCode: "MAT 1203", fullName: "COMPUTATIONAL MATHEMATICS - II", att: "76.92" },
+          { code: "HUM 1071", name: "COMMUNICATION SKILLS IN ENGLISH", internal: 36, grade: "A", fullCode: "HUM 1071", fullName: "COMMUNICATION SKILLS IN ENGLISH", att: "83.33" }
+        ]
+      }
+    };
+
+    // Transitions from login card straight into portal workspaces seamlessly
+    function handleLogin() {
+      document.getElementById("login-screen").classList.add("hidden");
+      document.getElementById("portal-content").classList.remove("hidden");
+      showView('profile');
+    }
+
+    function toggleMenu(show) {
+      document.getElementById("menu-overlay").style.display = show ? "block" : "none";
+      document.getElementById("menu-panel").style.display = show ? "block" : "none";
+    }
+
+    function openPopup(type) {
+      closePopups();
+      toggleMenu(false);
+      document.getElementById("modal-backdrop").style.display = "block";
+      if(type === 'academics') document.getElementById("modal-academics").style.display = "block";
+    }
+
+    function closePopups() {
+      document.getElementById("modal-backdrop").style.display = "none";
+      document.getElementById("modal-academics").style.display = "none";
+    }
+
+    function showView(viewId) {
+      closePopups();
+      
+      const views = ['view-profile', 'view-results', 'view-attendance', 'view-schedule', 'view-applications', 'view-support', 'view-calendar', 'view-feedback'];
+      views.forEach(id => document.getElementById(id).classList.add("hidden"));
+      
+      if (viewId === 'results') {
+        document.getElementById('view-results').classList.remove("hidden");
+        switchSemester("sem2");
+        document.getElementById("semester-select").value = "sem2";
+      } else if (viewId === 'attendance') {
+        document.getElementById('view-attendance').classList.remove("hidden");
+        renderAttendance("sem2");
+        document.getElementById("attendance-sem-select").value = "sem2";
+      } else {
+        const targetingId = `view-${viewId}`;
+        if(document.getElementById(targetingId)) {
+          document.getElementById(targetingId).classList.remove("hidden");
+        }
+      }
+      toggleMenu(false);
+    }
+
+    function switchSemester(semKey) {
+      const data = academicData[semKey];
+      document.getElementById("overview-credit").innerText = semKey === 'sem1' ? '22' : '18';
+      document.getElementById("overview-gpa").innerText = data.gpa;
+      
+      const listContainer = document.getElementById("subject-list");
+      listContainer.innerHTML = "";
+      
+      data.subjects.forEach((item, index) => {
+        const rowId = `row-${semKey}-${index}`;
+        const rowHTML = `
+          <div id="${rowId}" onclick="toggleRowExpand('${rowId}', '${item.code}', '${item.fullCode}', '${item.name}', '${item.fullName}', '${item.internal}', '${item.grade}')" class="grid grid-cols-4 items-center text-xs py-3.5 px-4 bg-white border-b border-gray-200 cursor-pointer transition-all duration-200">
+            <div class="text-gray-800 text-left tracking-tight code-col truncate pr-1">${item.code}</div>
+            <div class="text-gray-400 text-left name-col truncate pr-1 text-[11px] leading-tight">${item.name}</div>
+            <div class="text-center internal-col">${item.internal}</div>
+            <div class="text-center grade-col text-gray-700 font-medium">${item.grade}</div>
+          </div>
+        `;
+        listContainer.innerHTML += rowHTML;
+      });
+    }
+
+    function renderAttendance(semKey) {
+      const data = academicData[semKey];
+      document.getElementById("attendance-pill-title").innerText = semKey === 'sem1' ? 'Semester - I' : 'Semester - II';
+      
+      const attendanceContainer = document.getElementById("attendance-list");
+      attendanceContainer.innerHTML = "";
+      
+      data.subjects.forEach(item => {
+        const percentageNum = parseFloat(item.att);
+        const badgeColorClass = percentageNum === 0.00 ? "bg-red-600 text-white" : "bg-emerald-700 text-white";
+        
+        const rowHTML = `
+          <div class="flex items-center justify-between py-3.5 px-4 bg-white text-xs">
+            <div class="flex flex-col gap-0.5 max-w-[70%]">
+              <span class="text-gray-800 font-medium tracking-tight">${item.fullCode} : ${item.fullName}</span>
+            </div>
+            <div class="shrink-0">
+              <span class="px-3.5 py-1 rounded-full text-[11px] font-semibold text-center tracking-wide block min-w-[65px] ${badgeColorClass}">
+                ${item.att}
+              </span>
+            </div>
+          </div>
+        `;
+        attendanceContainer.innerHTML += rowHTML;
+      });
+    }
+
+    function toggleRowExpand(rowId, standardCode, fullCode, standardName, fullName, internalVal, gradeVal) {
+      const row = document.getElementById(rowId);
+      const codeContainer = row.querySelector('.code-col');
+      const nameContainer = row.querySelector('.name-col');
+      const internalContainer = row.querySelector('.internal-col');
+      const gradeContainer = row.querySelector('.grade-col');
+      
+      if (codeContainer.classList.contains('truncate')) {
+        codeContainer.classList.remove('truncate');
+        nameContainer.classList.remove('truncate');
+        
+        codeContainer.innerHTML = `<span class="text-gray-400">Code:</span> ${fullCode}`;
+        nameContainer.innerHTML = `<span class="text-gray-400">Course Name:</span> ${fullName}`;
+        internalContainer.innerHTML = `<span class="text-gray-400">Internal Marks:</span> ${internalVal}`;
+        gradeContainer.innerHTML = `<span class="text-gray-400">Grade:</span> ${gradeVal}`;
+        
+        row.classList.replace('grid-cols-4', 'grid-cols-1');
+        row.classList.add('space-y-1.5', 'bg-orange-50/20', 'text-left');
+        internalContainer.classList.replace('text-center', 'text-left');
+        gradeContainer.classList.replace('text-center', 'text-left');
+      } else {
+        codeContainer.classList.add('truncate');
+        nameContainer.classList.add('truncate');
+        
+        codeContainer.innerText = standardCode;
+        nameContainer.innerText = standardName;
+        internalContainer.innerText = internalVal;
+        gradeContainer.innerText = gradeVal;
+        
+        row.classList.replace('grid-cols-1', 'grid-cols-4');
+        row.classList.remove('space-y-1.5', 'bg-orange-50/20', 'text-left');
+        internalContainer.classList.replace('text-left', 'text-center');
+        gradeContainer.classList.replace('text-left', 'text-center');
+      }
+    }
+  </script>
+</body>
+</html>
